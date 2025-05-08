@@ -1,10 +1,10 @@
-[![Linux](https://github.com/tomasmark79/RaylibCpp/actions/workflows/linux.yml/badge.svg)](https://github.com/tomasmark79/RaylibCpp/actions/workflows/linux.yml)
-[![MacOS](https://github.com/tomasmark79/RaylibCpp/actions/workflows/macos.yml/badge.svg)](https://github.com/tomasmark79/RaylibCpp/actions/workflows/macos.yml)
-[![Windows](https://github.com/tomasmark79/RaylibCpp/actions/workflows/windows.yml/badge.svg)](https://github.com/tomasmark79/RaylibCpp/actions/workflows/windows.yml)
+[![Linux](https://github.com/tomasmark79/WebAppCppRay1Free/actions/workflows/linux.yml/badge.svg)](https://github.com/tomasmark79/WebAppCppRay1Free/actions/workflows/linux.yml)
+[![MacOS](https://github.com/tomasmark79/WebAppCppRay1Free/actions/workflows/macos.yml/badge.svg)](https://github.com/tomasmark79/WebAppCppRay1Free/actions/workflows/macos.yml)
+[![Windows](https://github.com/tomasmark79/WebAppCppRay1Free/actions/workflows/windows.yml/badge.svg)](https://github.com/tomasmark79/WebAppCppRay1Free/actions/workflows/windows.yml)
 
-# RaylibCpp
+# WebAppCppRay1Free
 
-A starter project to quickly kick off a C++ project with the **Raylib** library.
+Another demo C++ project with the **Raylib** library. Wasm compatible.
 
 ---
 
