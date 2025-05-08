@@ -1,6 +1,8 @@
 // MIT License
 // Copyright (c) 2024-2025 Tomáš Mark
 
+// https://www.raylib.com/cheatsheet/cheatsheet.html
+
 #include <Engine/Engine.hpp>
 #include <Assets/AssetContext.hpp>
 #include <Logger/Logger.hpp>
@@ -10,13 +12,17 @@
   #include <emscripten/emscripten.h>
 #endif
 
-#include <raylib.h>
-#include <math.h> // Required for: sinf()
+// #include <raylib.h>
+// #include <math.h> // Required for: sinf()
 
 namespace dotname {
 
-  Texture2D texture;
-  int virtualMain ();
+  // Static Raylib attributes definition
+  int Engine::screenWidth_;
+  int Engine::screenHeight_;
+  Texture2D Engine::textureDotNameLogo_;
+  Font Engine::fontTopText_;
+  Camera3D Engine::camera_;
 
   Engine::Engine () {
     LOG_D_STREAM << libName_ << " constructed ..." << std::endl;
@@ -30,72 +36,83 @@ namespace dotname {
                    << "╰➤ " << AssetContext::getAssetsPath () << std::endl;
       auto logo = std::ifstream (AssetContext::getAssetsPath () / "logo.png");
 
-      virtualMain ();
+      initRaylib ();
     }
   }
 
   Engine::~Engine () {
     LOG_D_STREAM << libName_ << " ... destructed" << std::endl;
+    UnloadTexture (Engine::textureDotNameLogo_); // Texture unloading
+    UnloadFont (Engine::fontTopText_);           // Font unloading
+    CloseWindow ();                              // Close window and OpenGL context
+    LOG_D_STREAM << "Window closed!" << std::endl;
+    AssetContext::clearAssetsPath ();
   }
 
-  //----------------------------------------------------------------------------------
-  // Global Variables Definition
-  //----------------------------------------------------------------------------------
-  int screenWidth = 800;
-  int screenHeight = 450;
 
-  //----------------------------------------------------------------------------------
-  // Module Functions Declaration
-  //----------------------------------------------------------------------------------
-  void UpdateDrawFrame (void); // Update and Draw one frame
+  void Engine::initRaylibWindow (int width, int height, const std::string& title) {
+    Engine::screenHeight_ = height;
+    Engine::screenWidth_ = width;
+    InitWindow (width, height, title.c_str ());
+  }
 
-  //----------------------------------------------------------------------------------
-  // Main Entry Point
-  //----------------------------------------------------------------------------------
-  int virtualMain () {
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    InitWindow (screenWidth, screenHeight, "WebAppCppRay1 Demo App by DotName");
-    texture = LoadTexture ((AssetContext::getAssetsPath () / "logo.png").string ().c_str ());
+  void Engine::initRaylib () {
+
+    int screenWidth = 640 * 2;
+    int screenHeight = 480 * 2;
+
+    Engine::initRaylibWindow (screenWidth, screenHeight, "WebAppCppRay1 Demo App by DotName");
+    if (!IsWindowReady ()) {
+      LOG_E_STREAM << "Window initialization failed!" << std::endl;
+      return;
+    }
+    LOG_D_STREAM << "Window initialized successfully!" << std::endl;
+
+    textureDotNameLogo_
+        = LoadTexture ((AssetContext::getAssetsPath () / "logo.png").string ().c_str ());
+    fontTopText_ = LoadFontEx (
+        (AssetContext::getAssetsPath () / "fonts" / "pixelplay.png").string ().c_str (), 20, 0, 0);
+
+    if (fontTopText_.glyphCount == 0) {
+      LOG_E_STREAM << "Font loading failed!" << std::endl;
+    } else {
+      LOG_D_STREAM << "Font loaded successfully!" << std::endl;
+    }
+
+    loopRaylib ();
+  }
+
+  void Engine::loopRaylib () {
 
 #if defined(PLATFORM_WEB)
-    emscripten_set_main_loop (UpdateDrawFrame, 0, 1);
+    emscripten_set_main_loop (updateDrawFrame, 0, 1);
 #else
-    SetTargetFPS (60); // Set our game to run at 60 frames-per-second
-
-    //--------------------------------------------------------------------------------------
-
-    // Main game loop
+    SetTargetFPS (120);           // Set our game to run at 60 frames-per-second
     while (!WindowShouldClose ()) // Detect window close button or ESC key
     {
-      UpdateDrawFrame ();
+      Engine::updateDrawFrame ();
     }
 #endif
-
-    UnloadTexture (texture);
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    CloseWindow (); // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
-
-    return 0;
   }
+
+  // https://www.raylib.com/cheatsheet/cheatsheet.html
 
   //----------------------------------------------------------------------------------
   // Module Functions Definition
   //----------------------------------------------------------------------------------
-  void UpdateDrawFrame (void) {
+  void Engine::updateDrawFrame (void) {
+
     // Update
     //----------------------------------------------------------------------------------
     // TODO: Update your variables here
     //----------------------------------------------------------------------------------
     // Initialize the camera
-    Camera3D camera = { 0 };
-    camera.position = Vector3{ 30.0f, 20.0f, 30.0f }; // Camera position
-    camera.target = Vector3{ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera.up = Vector3{ 0.0f, 1.0f, 0.0f }; // Camera up vector (rotation towards target)
-    camera.fovy = 70.0f;                       // Camera field-of-view Y
-    camera.projection = CAMERA_PERSPECTIVE;    // Camera projection type
+    camera_ = { 0 };
+    camera_.position = Vector3{ 30.0f, 20.0f, 30.0f }; // Camera position
+    camera_.target = Vector3{ 0.0f, 0.0f, 0.0f };      // camera_ looking at point
+    camera_.up = Vector3{ 0.0f, 1.0f, 0.0f }; // camera_ up vector (rotation towards target)
+    camera_.fovy = 70.0f;                     // camera_ field-of-view Y
+    camera_.projection = CAMERA_PERSPECTIVE;  // Camera projection type
 
     // Specify the amount of blocks in each direction
     const int numBlocks = 15;
@@ -106,9 +123,17 @@ namespace dotname {
     float scale = (2.0f + (float)sin (time)) * 0.7f;
 
     // Move camera around the scene
-    double cameraTime = time * 0.3;
-    camera.position.x = (float)cos (cameraTime) * 40.0f;
-    camera.position.z = (float)sin (cameraTime) * 40.0f;
+    double cameraTime = time * 0.8;
+    camera_.position.x = (float)cos (cameraTime) * 70.0f;
+    camera_.position.z = (float)sin (cameraTime) * 70.0f;
+
+    // CubeSize boundaries
+    float minCubeSize = 2.7f;
+    float maxCubeSize = 3.7f;
+    float currCubeSize = 2.7f;
+
+    const char* floatingText = "WebAppCppRay1 Demo App by DotName";
+    float spacing = 1.0f;
 
     // Draw
     //----------------------------------------------------------------------------------
@@ -116,9 +141,9 @@ namespace dotname {
 
     ClearBackground (RAYWHITE);
 
-    BeginMode3D (camera);
+    BeginMode3D (camera_);
 
-    DrawGrid (10, 5.0f);
+    // DrawGrid (16, 5.0f);
 
     for (int x = 0; x < numBlocks; x++) {
       for (int y = 0; y < numBlocks; y++) {
@@ -140,17 +165,48 @@ namespace dotname {
           Color cubeColor = ColorFromHSV ((float)(((x + y + z) * 18) % 360), 0.75f, 0.9f);
 
           // Calculate cube size
-          float cubeSize = (2.4f - scale) * blockScale;
+          if (currCubeSize > maxCubeSize)
+            currCubeSize = minCubeSize;
+          else
+            currCubeSize += 0.1f;
+
+          float cubeSize = (currCubeSize - scale) * blockScale;
 
           // And finally, draw the cube!
-          DrawCube (cubePos, cubeSize, cubeSize, cubeSize, cubeColor);
+          if (y > (numBlocks / 2)) {
+            DrawCube (cubePos, cubeSize, cubeSize, cubeSize, cubeColor);
+          } else {
+            DrawCubeWires (cubePos, cubeSize, cubeSize, cubeSize, cubeColor);
+          }
         }
       }
     }
 
     EndMode3D ();
 
-    DrawFPS (10, 10);
+    // Center & Draw Greeting text
+    const int greeterFontSize = 50;
+    int greeterTextWidth = MeasureText (floatingText, greeterFontSize);
+    int greeterTextX = (screenWidth_ - greeterTextWidth) / 2;
+    int greeterTextY = 10;
+    DrawText (floatingText, greeterTextX, greeterTextY, greeterFontSize, VIOLET);
+
+    // Center & Draw FPS
+    const int fpsFontSize = 30;
+    int fps = GetFPS ();
+    std::string fpsText = std::to_string (fps) + " fps";
+    int textWidth = MeasureText (fpsText.c_str (), fpsFontSize);
+    int textX = (screenWidth_ - textWidth) / 2;
+    int textY = screenHeight_ - fpsFontSize - 10;
+    DrawText (fpsText.c_str (), textX, textY, fpsFontSize, VIOLET);
+
+    // Center & Draw Logo DotName from Assets
+    int logoWidth = textureDotNameLogo_.width;
+    int logoHeight = textureDotNameLogo_.height;
+    int logoX = (screenWidth_ - logoWidth) - screenWidth_;
+    int logoY = (screenHeight_ - logoHeight) - screenHeight_;
+    DrawTexture (textureDotNameLogo_, logoX, logoY, WHITE);
+
     EndDrawing ();
     //----------------------------------------------------------------------------------
   }
