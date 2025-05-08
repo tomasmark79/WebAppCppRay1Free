@@ -58,8 +58,8 @@ namespace dotname {
 
   void Engine::initRaylib () {
 
-    int screenWidth = 640 * 2;
-    int screenHeight = 480 * 2;
+    int screenWidth = 640*2;
+    int screenHeight = 480*2;
 
     Engine::initRaylibWindow (screenWidth, screenHeight, "WebAppCppRay1 Demo App by DotName");
     if (!IsWindowReady ()) {
