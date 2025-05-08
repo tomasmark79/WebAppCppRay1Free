@@ -55,7 +55,7 @@ namespace dotname {
   int virtualMain () {
     // Initialization
     //--------------------------------------------------------------------------------------
-    InitWindow (screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow (screenWidth, screenHeight, "WebAppCppRay1 Demo App by DotName");
     texture = LoadTexture ((AssetContext::getAssetsPath () / "logo.png").string ().c_str ());
 
 #if defined(PLATFORM_WEB)
@@ -91,9 +91,9 @@ namespace dotname {
     //----------------------------------------------------------------------------------
     // Initialize the camera
     Camera3D camera = { 0 };
-    camera.position = (Vector3){ 30.0f, 20.0f, 30.0f }; // Camera position
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f }; // Camera up vector (rotation towards target)
+    camera.position = Vector3{ 30.0f, 20.0f, 30.0f }; // Camera position
+    camera.target = Vector3{ 0.0f, 0.0f, 0.0f };      // Camera looking at point
+    camera.up = Vector3{ 0.0f, 1.0f, 0.0f }; // Camera up vector (rotation towards target)
     camera.fovy = 70.0f;                       // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;    // Camera projection type
 
