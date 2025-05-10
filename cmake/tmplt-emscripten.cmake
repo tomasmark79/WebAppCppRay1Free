@@ -31,7 +31,7 @@ function(emscripten target isRequiredHtml)
         # manually set flags is the best way
         set_target_properties(${target} PROPERTIES COMPILE_FLAGS "${_pthread}")
         set_target_properties(${target} PROPERTIES LINK_FLAGS
-                                                   "${_raylib} ${_wasm} ${_o3} ${_pthread} --preload-file ../share/Demo/assets@share/Demo/assets")
+                                                   "${_raylib} ${_wasm} ${_o3} ${_pthread} --preload-file ../../../../assets@share/Demo/assets")
 
     endif()
 

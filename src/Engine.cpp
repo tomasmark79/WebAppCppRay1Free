@@ -23,6 +23,7 @@ namespace dotname {
   int Engine::textSize_;
   int Engine::spacing_;
   Camera3D Engine::camera_;
+  Font Engine::fontFpsText_;
 
   Engine::Engine () {
     LOG_D_STREAM << libName_ << " constructed ..." << std::endl;
@@ -85,6 +86,14 @@ namespace dotname {
     spacing_ = screenWidth / 200;
     fontTopText_ = LoadFont ((AssetContext::getAssetsPath () / "fonts" / "pixemon.ttf").string ().c_str ());
     if (fontTopText_.glyphCount == 0) {
+      LOG_E_STREAM << "Font loading failed!" << std::endl;
+    } else {
+      LOG_D_STREAM << "Font loaded successfully!" << std::endl;
+    }
+
+
+    fontFpsText_ = LoadFont ((AssetContext::getAssetsPath () / "fonts" / "gomarice_g_type.ttf").string ().c_str ());
+    if (fontFpsText_.glyphCount == 0) {
       LOG_E_STREAM << "Font loading failed!" << std::endl;
     } else {
       LOG_D_STREAM << "Font loaded successfully!" << std::endl;
@@ -208,8 +217,8 @@ namespace dotname {
     int textWidth = MeasureText (fpsText.c_str (), textSize_);
     int textX = (screenWidth_ - textWidth) / 2;
     int textY = screenHeight_ - textSize_ - 10;
-    DrawText (fpsText.c_str (), textX, textY, textSize_, VIOLET);
-
+     DrawTextEx (fontFpsText_, fpsText.c_str (), { (float)textX, (float)textY }, textSize_, spacing_, VIOLET);
+    
     // Center & Draw Logo DotName from Assets
     int logoWidth = textureDotNameLogo_.width;
     int logoHeight = textureDotNameLogo_.height;

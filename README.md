@@ -4,15 +4,11 @@
 
 # WebAppCppRay1Free
 
-Another demo C++ project with the **Raylib** library. Wasm compatible. Added OOP wrapper. Could be used as a starter of more complex project. 
+Another demo C++ project with the **Raylib** library. Wasm compatible. Added OOP wrapper. Could be used as a starter of more complex project with the Railib framework. It is using Emscripten filesystem filled with the fonts and picture. 
 
-[**Watch real C++ App on my Website NOW**](https://digitalspace.name/demoapp/Demo.html)
+[**Watch real C++ App on my Website NOW**](https://digitalspace.name/demoapp/)
 
 <img src="assets/appdemo-ani.gif" alt="AnimatedGifOfWebAppCppRay1Free" width="40%">
-
-#### Todo
-
- - Add more awesome graphics
 
 ---
 

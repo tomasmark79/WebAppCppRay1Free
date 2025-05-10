@@ -36,6 +36,7 @@ namespace dotname {
     static int textSize_;
     static int spacing_;
     static Camera3D camera_;
+    static Font fontFpsText_;
 
     static void initRaylibWindow (int width, int height, const std::string& title);
     static void initRaylib ();

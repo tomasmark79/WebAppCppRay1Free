@@ -101,14 +101,6 @@ apply_hardening(${STANDALONE_NAME})
 apply_sanitizers(${STANDALONE_NAME})
 
 # ==============================================================================
-# Set target properties
-# ==============================================================================
-
-# Emscripten handler
-include(../cmake/tmplt-emscripten.cmake)
-emscripten(${STANDALONE_NAME} 1) # 1 = html target requested
-
-# ==============================================================================
 # Set linking
 # ==============================================================================
 target_link_libraries(${STANDALONE_NAME} PRIVATE dotname::Engine cxxopts)
@@ -120,10 +112,18 @@ set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION bin)
 install(TARGETS ${STANDALONE_NAME} RUNTIME DESTINATION bin)
 
 # ==============================================================================
-# Asset files processing
+# Asset files processing must be before Emscripten filesystem mounting
 # ==============================================================================
 include(../cmake/tmplt-assets.cmake)
 apply_assets_processing_standalone()
+
+# ==============================================================================
+# Set target properties
+# ==============================================================================
+
+# Emscripten handler must have prepared assets
+include(../cmake/tmplt-emscripten.cmake)
+emscripten(${STANDALONE_NAME} 1) # 1 = html target requested
 
 # ==============================================================================
 # GTests processing via interface
