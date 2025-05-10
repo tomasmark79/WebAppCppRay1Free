@@ -122,9 +122,9 @@ apply_sanitizers(${LIBRARY_NAME})
 # Set target properties
 # ==============================================================================
 
-# Emscripten handler
+# emscripten handler
 include(cmake/tmplt-emscripten.cmake)
-emscripten(${LIBRARY_NAME} 0)
+emscripten(${LIBRARY_NAME} 0 1 "")
 
 # ==============================================================================
 # Set headers

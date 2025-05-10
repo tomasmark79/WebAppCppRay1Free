@@ -121,10 +121,9 @@ apply_assets_processing_standalone()
 # Set target properties
 # ==============================================================================
 
-# Emscripten handler must have prepared assets
-# note: /share/inheritance from Standalone target name
+# emscripten handler
 include(../cmake/tmplt-emscripten.cmake)
-emscripten(${STANDALONE_NAME} 1) # 1 = html target requested
+emscripten(${STANDALONE_NAME} 1 1 "")
 
 # ==============================================================================
 # GTests processing via interface

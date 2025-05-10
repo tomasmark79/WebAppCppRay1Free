@@ -1,6 +1,6 @@
 # MIT License Copyright (c) 2024-2025 Tomáš Mark
 
-function(emscripten target isRequiredHtml)
+function(emscripten target isHtml reqPthreads customPrePath)
     if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
         message(STATUS "Emscripten environment detected")
 
@@ -9,7 +9,7 @@ function(emscripten target isRequiredHtml)
 
         set_target_properties(${target} PROPERTIES OUTPUT_NAME "${target}")
 
-        if(isRequiredHtml EQUAL 1)
+        if(isHtml EQUAL 1)
             message(STATUS "html target requested")
             set_target_properties(${target} PROPERTIES SUFFIX ".html")
         endif()
@@ -26,12 +26,26 @@ function(emscripten target isRequiredHtml)
         set(_sdl2_ttf "-s USE_SDL_TTF=2")
         set(_sdl2_net "-s USE_SDL_NET=2")
         set(_sdl2_mixer "-s USE_SDL_MIXER=2")
-        set(_pthread "-s USE_PTHREADS=1 -pthread")
+
+        if(reqPthreads EQUAL 1)
+            set(_pthread "-s USE_PTHREADS=1 -pthread")
+        else()
+            set(_pthread "")
+        endif()
+
+        # default assets direction is share/${target}/assets
+        if(NOT DEFINED customPrePath OR customPrePath STREQUAL "")
+            set(customPrePath "--preload-file ../../../../assets@share/${target}/assets")
+        endif()
 
         # manually set flags is the best way
-        set_target_properties(${target} PROPERTIES COMPILE_FLAGS "${_pthread}")
-        set_target_properties(${target} PROPERTIES LINK_FLAGS
-                                                   "${_raylib} ${_wasm} ${_o3} ${_pthread} --preload-file ../../../../assets@share/${target}/assets")
+        set_target_properties(${target} PROPERTIES COMPILE_FLAGS "${_o3} ${_pthread} ${_sdl2_sdl2} ${_sdl2_image} ${_sdl2_ttf} ${_sdl2_net} ${_sdl2_mixer}")
+        set_target_properties(
+            ${target}
+            PROPERTIES
+                LINK_FLAGS
+                "${_wasm} ${_pthread} ${_sdl2_sdl2} ${_sdl2_image} ${_sdl2_ttf} ${_sdl2_net} ${_sdl2_mixer} ${customPrePath}"
+        )
 
     endif()
 
