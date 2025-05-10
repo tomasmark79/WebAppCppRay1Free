@@ -168,8 +168,7 @@ target_link_libraries(
     # PRIVATE ZLIB::ZLIB
     # PRIVATE nlohmann_json::nlohmann_json
     # PRIVATE yaml-cpp
-    PUBLIC raylib
-)
+    PUBLIC raylib)
 
 # ==============================================================================
 # set packageProject arttributes

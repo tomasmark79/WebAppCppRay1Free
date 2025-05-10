@@ -34,8 +34,6 @@ option(ENABLE_CCACHE "Enable ccache" ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # === gtest
 option(ENABLE_GTESTS "Enable gtests" ON)
-# === emscripten pthread
-option(ENABLE_EMSCRIPTEN_PTHREAD "Enable pthread for emscripten" ON)
 
 # ==============================================================================
 # Project attributes

@@ -27,12 +27,14 @@ namespace dotname {
     ~Engine ();
 
   private:
-
     // Static Raylib attributes declaration
     static int screenWidth_;
     static int screenHeight_;
     static Texture2D textureDotNameLogo_;
+    static Image imageLogo_;
     static Font fontTopText_;
+    static int textSize_;
+    static int spacing_;
     static Camera3D camera_;
 
     static void initRaylibWindow (int width, int height, const std::string& title);

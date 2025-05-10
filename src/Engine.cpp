@@ -12,16 +12,16 @@
   #include <emscripten/emscripten.h>
 #endif
 
-// #include <raylib.h>
-// #include <math.h> // Required for: sinf()
-
 namespace dotname {
 
   // Static Raylib attributes definition
   int Engine::screenWidth_;
   int Engine::screenHeight_;
   Texture2D Engine::textureDotNameLogo_;
+  Image Engine::imageLogo_;
   Font Engine::fontTopText_;
+  int Engine::textSize_;
+  int Engine::spacing_;
   Camera3D Engine::camera_;
 
   Engine::Engine () {
@@ -49,7 +49,6 @@ namespace dotname {
     AssetContext::clearAssetsPath ();
   }
 
-
   void Engine::initRaylibWindow (int width, int height, const std::string& title) {
     Engine::screenHeight_ = height;
     Engine::screenWidth_ = width;
@@ -58,9 +57,15 @@ namespace dotname {
 
   void Engine::initRaylib () {
 
-    int screenWidth = 640*2;
-    int screenHeight = 480*2;
+#if defined(PLATFORM_WEB)
+    int screenWidth = 800;
+    int screenHeight = 450;
+#else
+    int screenWidth = 1920;
+    int screenHeight = 1080;
+#endif
 
+    
     Engine::initRaylibWindow (screenWidth, screenHeight, "WebAppCppRay1 Demo App by DotName");
     if (!IsWindowReady ()) {
       LOG_E_STREAM << "Window initialization failed!" << std::endl;
@@ -68,11 +73,17 @@ namespace dotname {
     }
     LOG_D_STREAM << "Window initialized successfully!" << std::endl;
 
-    textureDotNameLogo_
-        = LoadTexture ((AssetContext::getAssetsPath () / "logo.png").string ().c_str ());
-    fontTopText_ = LoadFontEx (
-        (AssetContext::getAssetsPath () / "fonts" / "pixelplay.png").string ().c_str (), 20, 0, 0);
 
+    // load and resize DotName logo
+    imageLogo_ = LoadImage ((AssetContext::getAssetsPath () / "logo.png").string ().c_str ());
+    ImageResize (&Engine::imageLogo_, (float)imageLogo_.width / 1.9f,
+                 (float)imageLogo_.height / 1.9f);
+    textureDotNameLogo_ = LoadTextureFromImage (Engine::imageLogo_);
+
+    // font
+    textSize_ = screenWidth / 50;
+    spacing_ = screenWidth / 200;
+    fontTopText_ = LoadFont ((AssetContext::getAssetsPath () / "fonts" / "pixemon.ttf").string ().c_str ());
     if (fontTopText_.glyphCount == 0) {
       LOG_E_STREAM << "Font loading failed!" << std::endl;
     } else {
@@ -107,12 +118,11 @@ namespace dotname {
     // TODO: Update your variables here
     //----------------------------------------------------------------------------------
     // Initialize the camera
-    camera_ = { 0 };
-    camera_.position = Vector3{ 30.0f, 20.0f, 30.0f }; // Camera position
-    camera_.target = Vector3{ 0.0f, 0.0f, 0.0f };      // camera_ looking at point
-    camera_.up = Vector3{ 0.0f, 1.0f, 0.0f }; // camera_ up vector (rotation towards target)
-    camera_.fovy = 70.0f;                     // camera_ field-of-view Y
-    camera_.projection = CAMERA_PERSPECTIVE;  // Camera projection type
+    camera_ = { Vector3{ 30.0f, 20.0f, 30.0f }, // Camera position
+                Vector3{ 0.0f, 0.0f, 0.0f },    // Camera target
+                Vector3{ 0.0f, 1.0f, 0.0f },    // Camera up vector
+                70.0f,                          // Camera field-of-view Y
+                CAMERA_PERSPECTIVE };           // Camera projection type
 
     // Specify the amount of blocks in each direction
     const int numBlocks = 15;
@@ -132,8 +142,7 @@ namespace dotname {
     float maxCubeSize = 3.7f;
     float currCubeSize = 2.7f;
 
-    const char* floatingText = "WebAppCppRay1 Demo App by DotName";
-    float spacing = 1.0f;
+    const char* floatingText = "WebAppCppRay1 Demo App by";
 
     // Draw
     //----------------------------------------------------------------------------------
@@ -148,6 +157,7 @@ namespace dotname {
     for (int x = 0; x < numBlocks; x++) {
       for (int y = 0; y < numBlocks; y++) {
         for (int z = 0; z < numBlocks; z++) {
+
           // Scale of the blocks depends on x/y/z positions
           float blockScale = (x + y + z) / 30.0f;
 
@@ -185,26 +195,26 @@ namespace dotname {
     EndMode3D ();
 
     // Center & Draw Greeting text
-    const int greeterFontSize = 50;
-    int greeterTextWidth = MeasureText (floatingText, greeterFontSize);
+    int greeterTextWidth = MeasureTextEx (fontTopText_, floatingText, textSize_, spacing_).x;
+    // int greeterTextHeight = MeasureTextEx (fontTopText_, floatingText, fontTopTextSize_, 0).y;
     int greeterTextX = (screenWidth_ - greeterTextWidth) / 2;
     int greeterTextY = 10;
-    DrawText (floatingText, greeterTextX, greeterTextY, greeterFontSize, VIOLET);
+    DrawTextEx (fontTopText_, floatingText, { (float)greeterTextX, (float)greeterTextY }, textSize_,
+                spacing_, VIOLET);
 
     // Center & Draw FPS
-    const int fpsFontSize = 30;
     int fps = GetFPS ();
     std::string fpsText = std::to_string (fps) + " fps";
-    int textWidth = MeasureText (fpsText.c_str (), fpsFontSize);
+    int textWidth = MeasureText (fpsText.c_str (), textSize_);
     int textX = (screenWidth_ - textWidth) / 2;
-    int textY = screenHeight_ - fpsFontSize - 10;
-    DrawText (fpsText.c_str (), textX, textY, fpsFontSize, VIOLET);
+    int textY = screenHeight_ - textSize_ - 10;
+    DrawText (fpsText.c_str (), textX, textY, textSize_, VIOLET);
 
     // Center & Draw Logo DotName from Assets
     int logoWidth = textureDotNameLogo_.width;
     int logoHeight = textureDotNameLogo_.height;
-    int logoX = (screenWidth_ - logoWidth) - screenWidth_;
-    int logoY = (screenHeight_ - logoHeight) - screenHeight_;
+    int logoX = (screenWidth_ / 2) - logoWidth / 2;
+    int logoY = logoHeight + textSize_;
     DrawTexture (textureDotNameLogo_, logoX, logoY, WHITE);
 
     EndDrawing ();
