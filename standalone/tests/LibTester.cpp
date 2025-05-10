@@ -4,17 +4,17 @@
 #include "../src/AppCore.hpp"
 #include <gtest/gtest.h>
 
-TEST (DemoLogic, HandlesArguments) {
-  const char* argv[] = { "Demo", "--help" };
-  EXPECT_EQ (runDemo (2, argv), 0);
+TEST (WebAppCppRay1Logic, HandlesArguments) {
+  const char* argv[] = { "WebAppCppRay1", "--help" };
+  EXPECT_EQ (runWebAppCppRay1 (2, argv), 0);
 }
 
-TEST (DemoLogic, HandlesArgumentsNoLibrary) {
-  const char* argv[] = { "Demo", "--omit" };
-  EXPECT_EQ (runDemo (2, argv), 0);
+TEST (WebAppCppRay1Logic, HandlesArgumentsNoLibrary) {
+  const char* argv[] = { "WebAppCppRay1", "--omit" };
+  EXPECT_EQ (runWebAppCppRay1 (2, argv), 0);
 }
 
-TEST (DemoLogic, HandlesArgumentsLog2File) {
-  const char* argv[] = { "Demo", "--log2file" };
-  EXPECT_EQ (runDemo (2, argv), 0);
+TEST (WebAppCppRay1Logic, HandlesArgumentsLog2File) {
+  const char* argv[] = { "WebAppCppRay1", "--log2file" };
+  EXPECT_EQ (runWebAppCppRay1 (2, argv), 0);
 }

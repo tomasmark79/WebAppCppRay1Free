@@ -67,7 +67,7 @@ namespace dotname {
 #endif
 
     
-    Engine::initRaylibWindow (screenWidth, screenHeight, "WebAppCppRay1 Demo App by DotName");
+    Engine::initRaylibWindow (screenWidth, screenHeight, "WebAppCppRay1 WebAppCppRay1 App by DotName");
     if (!IsWindowReady ()) {
       LOG_E_STREAM << "Window initialization failed!" << std::endl;
       return;
@@ -151,7 +151,7 @@ namespace dotname {
     float maxCubeSize = 3.7f;
     float currCubeSize = 2.7f;
 
-    const char* floatingText = "WebAppCppRay1 Demo App by";
+    const char* floatingText = "WebAppCppRay1 WebAppCppRay1 App by";
 
     // Draw
     //----------------------------------------------------------------------------------

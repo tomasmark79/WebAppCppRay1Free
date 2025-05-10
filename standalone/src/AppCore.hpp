@@ -19,8 +19,8 @@
 
 using namespace DotNameUtils;
 
-namespace DemoContext {
-  constexpr char standaloneName[] = "Demo";
+namespace WebAppCppRay1Context {
+  constexpr char standaloneName[] = "WebAppCppRay1";
   const std::filesystem::path standalonePath
       = PathUtils::getParentPath (PathUtils::getStandalonePath ());
   constexpr std::string_view utilsAssetPath = UTILS_ASSET_PATH;
@@ -33,7 +33,7 @@ std::unique_ptr<dotname::Engine> uniqueLib;
 
 int handlesArguments (int argc, const char* argv[]) {
   try {
-    auto options = std::make_unique<cxxopts::Options> (argv[0], DemoContext::standaloneName);
+    auto options = std::make_unique<cxxopts::Options> (argv[0], WebAppCppRay1Context::standaloneName);
     options->positional_help ("[optional args]").show_positional_help ();
     options->set_width (80);
     options->set_tab_expansion ();
@@ -50,13 +50,13 @@ int handlesArguments (int argc, const char* argv[]) {
     }
 
     if (result["log2file"].as<bool> ()) {
-      LOG.enableFileLogging (std::string (DemoContext::standaloneName) + ".log");
+      LOG.enableFileLogging (std::string (WebAppCppRay1Context::standaloneName) + ".log");
       LOG_D_STREAM << "Logging to file enabled [-2]" << std::endl;
     }
 
     if (!result.count ("omit")) {
       // uniqueLib = std::make_unique<dotname::Engine> ();
-      uniqueLib = std::make_unique<dotname::Engine> (DemoContext::assetsPath);
+      uniqueLib = std::make_unique<dotname::Engine> (WebAppCppRay1Context::assetsPath);
     } else {
       LOG_D_STREAM << "Loading library omitted [-1]" << std::endl;
     }
@@ -95,11 +95,11 @@ int printAssets (const std::filesystem::path& assetsPath) {
   return 0;
 }
 
-int runDemo (int argc, const char* argv[]) {
+int runWebAppCppRay1 (int argc, const char* argv[]) {
 
   LOG.noHeader (true);
   LOG.setSkipLine (false);
-  LOG_I_STREAM << "Starting " << DemoContext::standaloneName << " ..." << std::endl;
+  LOG_I_STREAM << "Starting " << WebAppCppRay1Context::standaloneName << " ..." << std::endl;
 
 #ifdef EMSCRIPTEN
   LOG_I_STREAM << "╰➤ C++ Running in Emscripten environment" << std::endl;
@@ -118,6 +118,6 @@ int runDemo (int argc, const char* argv[]) {
   uniqueLib = nullptr;
 
   // bye
-  LOG_I_STREAM << "Sucessfully exited " << DemoContext::standaloneName << std::endl;
+  LOG_I_STREAM << "Sucessfully exited " << WebAppCppRay1Context::standaloneName << std::endl;
   return 0;
 }

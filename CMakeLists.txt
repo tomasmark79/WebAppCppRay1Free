@@ -196,7 +196,7 @@ packageProject(
     # (optional) install your library with a namespace (Note: do NOT add extra '::')
     NAMESPACE ${LIBRARY_NAMESPACE}
     # (optional) define the project's version compatibility, defaults to `AnyNewerVersion`
-    # supported values: `AnyNewerVersion|SameMajorVersion|SameMinorVersion|DemoVersion`
+    # supported values: `AnyNewerVersion|SameMajorVersion|SameMinorVersion|WebAppCppRay1Version`
     COMPATIBILITY AnyNewerVersion
     # (optional) option to disable the versioning of install destinations
     DISABLE_VERSION_SUFFIX YES

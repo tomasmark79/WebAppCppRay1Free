@@ -4,5 +4,5 @@
 #include "AppCore.hpp"
 
 int main (int argc, const char* argv[]) {
-  return runDemo (argc, argv);
+  return runWebAppCppRay1 (argc, argv);
 }

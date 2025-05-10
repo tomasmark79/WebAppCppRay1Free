@@ -38,7 +38,7 @@ option(ENABLE_GTESTS "Enable gtests" ON)
 # ==============================================================================
 # Project attributes
 # ==============================================================================
-set(STANDALONE_NAME Demo)
+set(STANDALONE_NAME WebAppCppRay1)
 string(TOLOWER "${STANDALONE_NAME}" STANDALONE_NAME_LOWER)
 set(STANDALONE_NAMESPACE dotname)
 project(
@@ -122,6 +122,7 @@ apply_assets_processing_standalone()
 # ==============================================================================
 
 # Emscripten handler must have prepared assets
+# note: /share/inheritance from Standalone target name
 include(../cmake/tmplt-emscripten.cmake)
 emscripten(${STANDALONE_NAME} 1) # 1 = html target requested
 
