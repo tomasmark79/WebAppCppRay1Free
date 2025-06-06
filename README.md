@@ -4,7 +4,7 @@
 
 # WebAppCppRay1Free
 
-Another demo C++ project with the **Raylib** library. Wasm compatible. Added OOP wrapper. Could be used as a starter of more complex project with the Railib framework. It is using Emscripten filesystem filled with the fonts and picture. 
+WebAppCppRay1Free is a C++ web application built with the Raylib framework and compatible with WebAssembly. It features an OOP wrapper and utilizes Emscripten filesystem for fonts and images. This project serves as an excellent starter template for more complex Raylib-based applications.
 
 [**Watch real C++ App on my Website NOW**](https://digitalspace.name/demoapp/)
 
